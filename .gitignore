@@ -1,0 +1,53 @@
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+
+# Virtual environment
+.env/
+env/
+*.env  # Ignore environment variable files
+.env
+.env.local
+.env.production
+.env.development
+
+# Logs & runtime files
+*.log
+*.out
+*.pid
+*.db
+*.sqlite3
+*.sqlite
+*.pkl
+
+# FastAPI & Uvicorn
+instance/
+*.uvicorn
+*.starlette
+
+# IDE & editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Celery & Message Queue
+celerybeat-schedule
+celerybeat.pid
+__celery_worker__
+
+# Testing & coverage
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+nosetests.xml
+test-reports/
