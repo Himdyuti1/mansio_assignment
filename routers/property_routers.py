@@ -12,9 +12,10 @@ from database import get_db
 
 router=APIRouter()
 
-@router.post("/post_property",response_model=PropertyResponse)
+@router.post("/post_property",response_model=dict)
 async def add_property(property_data:PropertyCreate,db:AsyncSession=Depends(get_db)):
-    return await create_property(db,property_data)
+    message=await create_property(db,property_data)
+    return {"message":message}
 
 @router.get("/get_property/{property_id}",response_model=dict)
 async def get_property_endpoint(property_id:int,db:AsyncSession=Depends(get_db)):

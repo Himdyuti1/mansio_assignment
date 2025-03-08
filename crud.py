@@ -2,35 +2,56 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models import Property
 from schemas import PropertyCreate, PropertyUpdate, PropertyRead
 from ai_utils import enhance_description,generate_keywords
-from stripe_service import create_product
+from stripe_utils import create_product
 from fastapi import HTTPException
 from sqlalchemy.future import select
+import pika
+import json
+
+RABBITMQ_HOST="localhost" 
+
+def sent_task_to_queue(queue_name,task):
+    connection=pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST))
+    channel=connection.channel()
+    channel.queue_declare(queue=queue_name,durable=True)
+
+    message=json.dumps(task)
+    channel.basic_publish(exchange="",routing_key=queue_name,body=message)
+    connection.close()
 
 async def create_property(db:AsyncSession,property_data:PropertyCreate):
-    enhanced_description=await enhance_description(property_data.title,property_data.description or "")
-    ai_keywords=await generate_keywords(property_data.title,property_data.description or "")
-
     new_property=Property(
         title=property_data.title,
-        description=enhanced_description,
+        description=property_data.description,
         price=property_data.price,
         status=property_data.status,
-        ai_keywords=ai_keywords,
+        ai_keywords=None,
         stripe_product_id=None
     )
     db.add(new_property)
     await db.commit()
     await db.refresh(new_property)
 
-    try:
-        stripe_product_id,_=await create_product(id=new_property.id,title=new_property.title,price=new_property.price)
-        new_property.stripe_product_id=stripe_product_id
-        await db.commit()
-        await db.refresh(new_property)
-        return new_property
-    except Exception as e:
-        await delete_property(db,new_property.id)
-        raise HTTPException(status_code=400,detail=str(e))
+    sent_task_to_queue(
+        "ai_tasks",
+        {
+            "task":"ai_enhancements",
+            "title":property_data.title,
+            "description":property_data.description,
+            "property_id":new_property.id
+        }
+    )
+
+    sent_task_to_queue(
+        "stripe_tasks",
+        {
+            "task":"create_product",
+            "property_id":new_property.id,
+            "title":new_property.title,
+            "price":new_property.price
+        }
+    )
+    return f"Property {new_property.id} created successfully"
 
 
 async def update_property(db:AsyncSession,property_id:int,update_data:PropertyUpdate):
