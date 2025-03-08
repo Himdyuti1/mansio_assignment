@@ -50,7 +50,7 @@ async def get_property(db:AsyncSession,property_id:int):
     property_obj=await db.get(Property,property_id)
     if not property_obj:
         raise HTTPException(status_code=404,detail="Property not found")
-    return property_obj
+    return PropertyRead.model_validate(property_obj, from_attributes=True)
 
 async def get_all_properties(db:AsyncSession):
     result=await db.execute(select(Property))
@@ -64,3 +64,12 @@ async def delete_property(db:AsyncSession,property_id:int):
     await db.delete(property_obj)
     await db.commit()
     return {"message":f"Property {property_id} deleted successfully"}
+
+async def change_property_status(db: AsyncSession, property_id: int):
+    property_obj=await db.get(Property,int(property_id))
+    if property_obj:
+        property_obj.status = "paid"
+        await db.commit()
+        await db.refresh(property_obj)
+    else:
+        raise HTTPException(status_code=404, detail="Property not found")

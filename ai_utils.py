@@ -35,5 +35,3 @@ async def generate_keywords(title:str,description:str)->str:
     """
     response=conn.generate(prompt=prompt)
     return response.generations[0].text.strip()
-
-# print(generate_keywords("Luxury Apartment","A beautiful apartment in the heart of the city with stunning views of the skyline."))
