@@ -7,8 +7,12 @@ from fastapi import HTTPException
 from sqlalchemy.future import select
 import pika
 import json
+from dotenv import load_dotenv
+import os
 
-RABBITMQ_HOST="localhost" 
+load_dotenv()
+
+RABBITMQ_HOST=os.getenv("RABBITMQ_HOST")
 
 def sent_task_to_queue(queue_name,task):
     connection=pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST))

@@ -11,7 +11,7 @@ import asyncio
 load_dotenv()
 
 COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-RABBITMQ_HOST="localhost"
+RABBITMQ_HOST=os.getenv("RABBITMQ_HOST")
 
 conn=cohere.Client(COHERE_API_KEY)
 

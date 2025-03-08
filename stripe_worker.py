@@ -4,8 +4,12 @@ from database import get_db
 from stripe_utils import create_product
 from models import Property
 import asyncio
+from dotenv import load_dotenv
+import os
 
-RABBITMQ_HOST="localhost"
+load_dotenv()
+
+RABBITMQ_HOST=os.getenv("RABBITMQ_HOST")
 
 async def process_stripe_task(ch,method,properties,body):
     task=json.loads(body)
