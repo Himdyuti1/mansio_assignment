@@ -44,27 +44,30 @@ pip install -r requirements.txt
 ### 4️⃣ Set Up Environment Variables
 Create a .env file in the project root and configure:
 ```text
-DATABASE_URL=postgresql+asyncpg://username:password@localhost:5432/mansio
+DATABASE_URL=postgresql+asyncpg://username:password@server-url/database_name
 COHERE_API_KEY=your-cohere-api-key
 STRIPE_SECRET_KEY=your-stripe-secret-key
 WEBHOOK_SECRET_KEY=your-webhook-secret-key
 RABBITMQ_HOST=rabbitmq-server-url
 ```
 
-### 5️⃣ Initialize the database
+### 5️⃣ Create the database
+Create a postgresql database with a suitable name on a local or deployed postgresql server
+
+### 6️⃣ Initialize the relation in the database
 ```sh
 python3 db_init.py
 ```
 
-### 6️⃣ Start RabbitMQ
+### 7️⃣ Start RabbitMQ
 Ensure RabbitMQ is installed and running:
 
-### 7️⃣ Run the FastAPI Backend
+### 8️⃣ Run the FastAPI Backend
 ```sh
 uvicorn main:app --reload
 ```
 
-### 8️⃣ Start the Workers
+### 9️⃣ Start the Workers
 
 **AI  Worker** (Handles AI-based property enhancements)
 ```sh
