@@ -19,6 +19,7 @@ The project follows a **microservice-inspired architecture** with background wor
 ✅ **Property Management** (CRUD operations)  
 ✅ **AI-enhanced Property Descriptions** (Cohere API)  
 ✅ **Stripe Integration** (Product creation & payments)  
+✅ **Stripe Webhook Integration** (Updates after payment completion)  
 ✅ **Asynchronous Task Processing** (RabbitMQ workers)  
 ✅ **PostgreSQL Storage**  
 
